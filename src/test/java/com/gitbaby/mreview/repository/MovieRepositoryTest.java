@@ -66,6 +66,6 @@ public class MovieRepositoryTest {
   @Test
   @DisplayName("영화 단일 조회")
   public void testGetMovieWithAll(){
-    repository.getMovieWithAll(101L).forEach(m -> {log.info(Arrays.toString(m));});
+    repository.getMovieWithAll(104L).forEach(m -> {log.info(Arrays.toString(m));});
   }
 }
