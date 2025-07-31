@@ -7,12 +7,28 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.11.0/axios.min.js" integrity="sha512-h9644v03pHqrIHThkvXhB2PJ8zf5E9IyVnrSfZg8Yj8k4RsO4zldcQc4Bi9iVLUCCsqNY0b4WXVV4UB+wbWENA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js" integrity="sha512-zKeerWHHuP3ar7kX2WKBSENzb+GJytFSBL6HrR2nPSR1kOX1qjm+oHooQtbDpDBSITgyl7QXZApvDfDWvKjkUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/css/bootstrap.min.css" integrity="sha512-fw7f+TcMjTb7bpbLJZlP8g2Y4XcCyFZW8uy8HsRZsH/SwbMw0plKHFHr99DN3l04VsYNwvzicUX/6qurvIxbxw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
   <input type="file" name="files" id="files" multiple>
   <button id="btnUpload" class="btn-upload">Upload</button>
+  <ul id="imgList">
+
+
+  </ul>
 
 <script>
+  window.onload = _ => {
+    document.querySelector("#imgList").addEventListener("click", e => {
+      if(e.target.matches(".btn-close")) {
+        e.target.closest("li").remove();
+      }
+    })
+
+  }
+
+
   const btnUpload = document.querySelector('#btnUpload');
   btnUpload.addEventListener('click', (event) => {
     event.preventDefault();
@@ -23,16 +39,34 @@
     });
 
     (async () => {
-      const resp = axios.post('/uploadAjax', formData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
+      try {
+        const resp = await axios.post('/uploadAjax', formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        document.querySelector("#imgList").innerHTML += resp.data.map(file =>
+            `<li><img src="/display${file.thumb}" alt="${file.origin}"><button class="btn btn-close"></button></li>`
+        ).join('');
+        console.log("업로드 완료")
+      } catch (error) {
+        console.log(error);
+        const status = error.response.status;
+        if(status === 400) {
+          alert(error.response.data);
         }
-      }).then((response) => {
-        console.log(response.data);})
-      console.log("업로드 완료")
-      console.log(resp);
+        else if (status == 500){
+          alert("서버 오류가 발생했습니다.")
+        }
+        else {
+          alert("알수 없는 오류" + status);
+        }
+      }
+
     })();
   })
+
+
 </script>
 </body>
 </html>
