@@ -30,9 +30,15 @@ public class MovieController {
     return "redirect:/movie/register";
   }
 
-  @GetMapping
+  @GetMapping("list")
   public void list(@ModelAttribute("requestDto") PageRequestDTO pageRequestDTO, Model model) {
     model.addAttribute("movies", movieService.getList(pageRequestDTO));
 
   }
+
+  @GetMapping("read")
+  public void read(@ModelAttribute("requestDto") PageRequestDTO pageRequestDTO, Model model, Long mno) {
+    model.addAttribute("dto", movieService.get(mno));
+  }
+
 }

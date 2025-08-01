@@ -30,7 +30,7 @@
 
         document.querySelector(".register-form").addEventListener("submit", e => {
           e.preventDefault();
-          document.querySelector(".register-form").innerHTML += [... document.querySelectorAll("#imgList li")].map((el, i) => {
+          document.querySelector("#imgList").insertAdjacentHTML("afterend", [... document.querySelectorAll("#imgList li")].map((el, i) => {
             const obj = {...el.dataset};
             console.log(obj)
             let str = "";
@@ -38,7 +38,7 @@
               str += `<input type="hidden" name="list[${i}].${x}" value="${obj[x]}">`;
             }
             return str;
-          }).join("")
+          }).join(""));
           e.target.submit();
         })
 

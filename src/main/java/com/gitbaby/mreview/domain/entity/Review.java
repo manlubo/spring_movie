@@ -13,8 +13,7 @@ public class Review extends BaseEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long reviewnum;
-  private int grade;
-  private String text;
+
 
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -23,4 +22,8 @@ public class Review extends BaseEntity {
   @ManyToOne(fetch = FetchType.LAZY)
   private Movie movie;
 
+  @Setter
+  private int grade;
+  @Setter
+  private String text;
 }

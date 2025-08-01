@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{/layout/index :: setContent(~{this::content})}">
+  <th:block th:fragment="content">
+    <h1>Guestbook Read Page</h1>
+
+      <div class="form-group">
+        <label for="mno">mno</label>
+        <input type="text" class="form-control" name="mno" placeholder="mno" id="mno" th:value="${dto.mno}" readonly="readonly">
+      </div>
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" placeholder="title" id="title" th:value="${dto.title}" readonly="readonly">
+      </div>
+      <div class="form-group">
+        <label>Avg</label>
+        <input type="text" class="form-control" name="writer" placeholder="Writer" th:value="${dto.avg}" readonly="readonly">
+      </div>
+    <div class="form-group">
+        <label>regDate</label>
+        <input type="text" class="form-control" name="regDate" placeholder="regDate" th:value="${#temporals.format(dto.regDate,'yyyy/MM/dd HH:mm:ss')}" readonly="readonly">
+      </div>
+    <div class="form-group" th:if{dto.moddate}>
+        <label>modDate</label>
+        <input type="text" class="form-control" name="regDate" placeholder="regDate" th:value="${#temporals.format(dto.modDate,'yyyy/MM/dd HH:mm:ss')}" readonly="readonly">
+      </div>
+    <div class="uploadResult">
+      <ul>
+        <li th:each="mi : ${dto.list}">
+          <img th:if="${mi != null && mi.path != null}" th:src="'/display' + ${mi.thumb}" onerror="this.src='https://placehold.co/200x200'">
+        </li>
+      </ul>
+    </div>
+
+
+    <a th:href="@{/movie/modify(page = ${requestDto.page}, size = ${requestDto.size}, mno= ${dto.mno}, type=${requestDto.type}, keyword=${requestDto.keyword})}" class="btn btn-primary mt-3">modify</a>
+    <a th:href="@{/movie/list(page = ${requestDto.page}, size = ${requestDto.size}, type=${requestDto.type}, keyword=${requestDto.keyword})}" class="btn btn-primary mt-3">List</a>
+    <div class="mt-4">
+      <h5><button class="badge bg-primary addReply p-2 text-decoration-none text-white border-0">Add review</button></h5>
+      <h5><button class="badge bg-secondary replyCount p-2 text-decoration-none text-white border-0">ReviewCount [[${dto.reviewCnt}]]</button></h5>
+      <ul class="list-group replyList">
+
+      </ul>
+    </div>
+  </th:block>
+</th:block>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="form-group">
+          <input class="form-control" type="text" name="text" placeholder="replyText...">
+        </div>
+        <div class="form-group mt-2">
+          <input class="form-control" type="text" name="replyer" placeholder="replyer...">
+        </div>
+        <input hidden="hidden" name="rno">
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger replyRemove">Remove</button>
+        <button type="button" class="btn btn-warning replyModify">Modify</button>
+        <button type="button" class="btn btn-primary replySave">Save</button>
+        <button type="button" class="btn btn-outline-secondary replyClose" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" integrity="sha512-FwNWaxyfy2XlEINoSnZh1JQ5TRRtGow0D6XcmAWmYCRgvqOUTnzCxPc9uF35u5ZEpirk1uhlPVA19tflhvnW1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/plugin/relativeTime.min.js" integrity="sha512-MVzDPmm7QZ8PhEiqJXKz/zw2HJuv61waxb8XXuZMMs9b+an3LoqOqhOEt5Nq3LY1e4Ipbbd/e+AWgERdHlVgaA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/locale/ko.min.js" integrity="sha512-ycjm4Ytoo3TvmzHEuGNgNJYSFHgsw/TkiPrGvXXkR6KARyzuEpwDbIfrvdf6DwXm+b1Y+fx6mo25tBr1Icg7Fw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!--<script th:inline="javascript">-->
+<!--  window.addEventListener("load", e => {-->
+<!--    const myModal = new bootstrap.Modal(document.getElementById('myModal'))-->
+<!--    dayjs.extend(window.dayjs_plugin_relativeTime);-->
+<!--    dayjs.locale('ko')-->
+<!--    const mno = [[${dto.mno}]];-->
+
+<!--    const listGroup = document.querySelector('.replyList');-->
+
+<!--    document.querySelector('.replyCount').addEventListener('click', _ => {-->
+<!--      loadJSONData()-->
+<!--    })-->
+
+<!--    document.querySelector('.addReply').addEventListener('click', _ => {-->
+
+<!--      document.querySelectorAll(".modal-body input[type=text]").forEach(i => i.value = '');-->
+
+<!--      [...document.querySelectorAll('.modal-footer button')]-->
+<!--          .filter(b => {b.classList.add('d-none'); return b.matches('.replyClose, .replySave');})-->
+<!--          .forEach(b => b.classList.remove('d-none'));-->
+
+<!--      // document.querySelector('.replyRemove').classList.add('d-none');-->
+<!--      // document.querySelector('.replySave').classList.remove('d-none');-->
+<!--      // document.querySelector('.replyModify').classList.add('d-none');-->
+
+
+<!--      myModal.show()-->
+<!--    })-->
+
+<!--    document.querySelector('.replySave').addEventListener('click', e => {-->
+<!--      const reply = {};-->
+<!--      e.target.closest('.modal').querySelectorAll('.modal-body input[type=text]').forEach(i => {-->
+<!--        reply[i.name] = i.value;-->
+<!--      });-->
+<!--      reply["bno"] = bno;-->
+
+<!--      postReply('/replies', reply);-->
+<!--    })-->
+
+
+<!--    // 수정/ 삭제 버튼 클릭 시 내용 포함 모달 띄우기-->
+<!--    document.querySelector('.replyList').addEventListener('click', ev => {-->
+<!--      if(ev.target.matches('.replyButton')){-->
+
+<!--        const rno = ev.target.closest("li").dataset.rno;-->
+<!--        document.querySelectorAll(".modal-body input[type=text]").forEach(i => i.value = '');-->
+
+<!--        [...document.querySelectorAll('.modal-footer button')]-->
+<!--            .filter(b => {b.classList.remove('d-none'); return b.matches('.replySave');})-->
+<!--            .forEach(b => b.classList.add('d-none'));-->
+<!--        fetch(`/replies/${rno}`)-->
+<!--            .then(resp => resp.json())-->
+<!--            .then(r => {-->
+<!--              document.querySelector('input[name=text]').value = r.text;-->
+<!--              document.querySelector('input[name=replyer]').value = r.replyer;-->
+<!--              document.querySelector('input[name=rno]').value = rno;-->
+<!--            })-->
+<!--        myModal.show();-->
+<!--      }-->
+<!--    })-->
+
+<!--    // 댓글 등록 메서드-->
+<!--    async function postReply(url, data) {-->
+<!--      await fetch(url, {-->
+<!--        method: 'POST',-->
+<!--        headers: {-->
+<!--          "Content-Type": "application/json",-->
+<!--        },-->
+<!--        body: JSON.stringify(data)-->
+<!--      })-->
+<!--      .then(resp => resp.json())-->
+<!--      .then(data => {alert(data + "번 댓글이 등록되었습니다.")});-->
+<!--      myModal.hide();-->
+<!--      loadJSONData();-->
+<!--    }-->
+
+<!--    // 수정처리-->
+<!--    document.querySelector('.replyModify').addEventListener('click', _ => {-->
+<!--      if(!confirm("수정하시겠습니까?")){-->
+<!--        return false;-->
+<!--      }-->
+<!--      const reply = {bno}-->
+<!--      document.querySelectorAll(".modal-body input").forEach(i => reply[i.name] = i.value);-->
+<!--      modifyReply(reply);-->
+<!--    })-->
+
+<!--    //수정 메서드-->
+<!--    async function modifyReply(data) {-->
+<!--      await fetch(`/replies/${data["rno"]}`,{-->
+<!--        method: 'PUT',-->
+<!--        headers: {-->
+<!--          "content-type": "application/json"-->
+<!--        },-->
+<!--        body: JSON.stringify(data)-->
+<!--      }).then(resp => resp.json())-->
+<!--          .then(rno => alert(rno + "번 댓글을 수정했습니다."));-->
+<!--      myModal.hide();-->
+<!--      loadJSONData();-->
+<!--    }-->
+
+
+<!--    // 삭제처리-->
+<!--    document.querySelector('.replyRemove').addEventListener('click', _ => {-->
+<!--      if(!confirm("삭제하시겠습니까?")){-->
+<!--        return false;-->
+<!--      }-->
+<!--      const rno = document.querySelector('input[name=rno]').value;-->
+<!--      deleteReply(rno);-->
+<!--    })-->
+
+<!--    // 삭제 메서드-->
+<!--    async function deleteReply(data) {-->
+<!--      await fetch(`/replies/${data}`,{-->
+<!--        method: 'DELETE',-->
+<!--        headers: {-->
+<!--          "content-type": "application/json"-->
+<!--        }-->
+<!--      }).then(resp => resp.json())-->
+<!--          .then(rno => alert(rno + "번 댓글을 삭제했습니다."));-->
+<!--      myModal.hide();-->
+<!--      loadJSONData();-->
+<!--    }-->
+
+<!--    // 리스트 가져오기-->
+<!--    function loadJSONData() {-->
+<!--      // let str = "";-->
+<!--      fetch(`../replies/board/${bno}`)-->
+<!--          .then(resp => resp.json())-->
+<!--          .then(body =>-->
+<!--            {-->
+<!--              document.querySelector(".replyCount").innerHTML = "Reply Count " + body.length;-->
+<!--              listGroup.innerHTML = body.map(r => {-->
+<!--               return `<li class="card list-group-item mb-2" data-rno="${r.rno}">-->
+<!--                 <div class="card-body">-->
+<!--                   <div>댓글 번호 : ${r.rno}</div>-->
+<!--                   <div>${r.text}</div>-->
+<!--                   <div class="d-flex justify-content-between">-->
+<!--                     <p class="text-muted m-0">${r.replyer}</p>-->
+<!--                     <p class="text-muted m-0">${dayjs(r.regDate).fromNow()}</p>-->
+<!--                   </div>-->
+<!--                   <button class="btn btn-secondary btn-sm replyButton">수정 / 삭제</button>-->
+<!--                 </div>-->
+<!--               </li>`-->
+<!--             }).join(""); // 배열을 문자열로 합치는 것. 반대는 스플릿.-->
+<!--            }-->
+<!--          )-->
+<!--    }-->
+
+<!--  })-->
+
+<!--</script>-->
+</html>

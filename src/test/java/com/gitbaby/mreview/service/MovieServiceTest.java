@@ -19,4 +19,10 @@ public class MovieServiceTest {
   public void testList() {
     movieService.getList(PageRequestDTO.builder().build()).getList().forEach(log::info);
   }
+
+  @Test
+  @DisplayName("단일 상세 조회")
+  public void testGet(){
+    log.info(movieService.get(112L));
+  }
 }
